@@ -20,9 +20,10 @@ ENV PYTHONUNBUFFERED=1
 
 WORKDIR /app
 
-COPY --from=build /usr/local/lib/ /usr/local/lib/
-
 COPY --from=build /app .
+
+RUN pip install --no-cache-dir -r requirements.txt && \
+    python manage.py migrate
 
 EXPOSE 8080
 
