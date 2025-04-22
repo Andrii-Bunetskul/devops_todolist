@@ -5,9 +5,11 @@ FROM python:${PYTHON_VERSION}-slim-buster AS build
 
 WORKDIR /app
 
-COPY . .
+COPY requirements.txt .
 
-RUN pip install --upgrade pip && pip install -r requirements.txt
+RUN pip install --no-cache-dir -r requirements.txt
+
+COPY . .
 
 RUN python manage.py migrate
 
@@ -17,6 +19,8 @@ FROM python:${PYTHON_VERSION}-slim-buster
 ENV PYTHONUNBUFFERED=1
 
 WORKDIR /app
+
+COPY --from=build /usr/local/lib/ /usr/local/lib/
 
 COPY --from=build /app .
 
