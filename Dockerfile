@@ -5,6 +5,8 @@ FROM python:${PYTHON_VERSION}-slim-buster AS build
 
 WORKDIR /app
 
+COPY . .
+
 #---run stage---
 FROM python:${PYTHON_VERSION}-slim-buster
 
