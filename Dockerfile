@@ -1,11 +1,25 @@
-FROM python:3.8
+ARG PYTHON_VERSION=3.8
+
+#---build stage---
+FROM python:${PYTHON_VERSION}-slim-buster AS build
 
 WORKDIR /app
 
-RUN pip install -r requirements.txt
+COPY . .
+
+RUN pip install --upgrade pip && pip install -r requirements.txt
+
 RUN python manage.py migrate
-RUN python manage.py runserver
 
-EXPOSE 8000
+#---run stage---
+FROM python:${PYTHON_VERSION}-slim-buster
 
-CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
+ENV PYTHONUNBUFFERED=1
+
+WORKDIR /app
+
+COPY --from=build /app .
+
+EXPOSE 8080
+
+CMD ["python", "manage.py", "runserver", "0.0.0.0:8080"]
